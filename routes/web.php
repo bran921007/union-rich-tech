@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\ClosureController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ClosureController;
+use App\Http\Controllers\Shopper\ShopperQueueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +31,5 @@ Route::namespace('Store')
     ->prefix('sign-in')
     ->name('public.')
     ->group(__DIR__ . '/Store/Location/public.php');
+
+Route::post('/sign-in/{locationUuid}/checkin', [ShopperQueueController::class, 'checkIn'])->name('queue.checkin');

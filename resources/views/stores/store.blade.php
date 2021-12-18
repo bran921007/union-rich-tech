@@ -50,7 +50,13 @@
                                         </x-table-column>
 
                                         <x-table-column>
-                                            {{ $location['shopper_limit'] ?? null }}
+                                            <form action="{{ route('store.location.limitshopper', ['storeUuid'=> $store['uuid'] ]) }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="location" value="{{ $location['uuid'] }}">
+                                                <input type="number" name="shopper_limit" value="{{ $location['shopper_limit'] ?? 0 }}" />
+                                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">Update</button>
+                                            </form>
+                                            
                                         </x-table-column>
 
                                         <x-table-column>

@@ -25,6 +25,40 @@
         <p class="lead">A complete project boilerplate built with Bootstrap</p>
         <p>Bootstrap v5.1.3</p>
     </div>
+    <div class="flex">
+      
+        <x-alert />
+        
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form action="{{ route('queue.checkin', ['locationUuid' => $location['uuid'], 'storeUuid'=> $location->store->id ]) }}" id="check-in" class="form-horizontal" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="first-name" class="col-sm-3 control-label">First Name</label>
+                        <div class="col-sm-7">
+                            <input id="first-name" name="first_name" class="form-control" type="text" value="{{ old('first_name') }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name" class="col-sm-3 control-label">Last Name</label>
+                        <div class="col-sm-7">
+                            <input id="last-name" name="last_name" class="form-control" type="text" value="{{ old('last_name') }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-3 control-label">Email</label>
+                        <div class="col-sm-7">
+                            <input id="email" name="email" class="form-control" type="email" value="{{ old('email') }}" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Check In</button>
+                </form>
+            </div>
+
+        </div>                
+                        
+    </div>
+
 </div>
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

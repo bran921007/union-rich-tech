@@ -2,6 +2,7 @@
 
 namespace App\Observers\Shopper;
 
+use Carbon\Carbon;
 use App\Models\Shopper\Shopper;
 use App\Observers\BaseObserver;
 
@@ -11,6 +12,18 @@ use App\Observers\BaseObserver;
  */
 class ShopperObserver extends BaseObserver
 {
+
+    /**
+     * @desc Set unique UUID for model
+     * @param $model
+     * @return mixed|void
+     */
+    public function creating($model)
+    {
+        parent::creating($model);
+        $model->check_in = now();
+    }
+
     /**
      * Handle the Shopper "created" event.
      *

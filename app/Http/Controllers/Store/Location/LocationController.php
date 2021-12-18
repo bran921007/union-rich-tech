@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Store\Location\LocationCreateRequest;
 use App\Http\Requests\Store\Location\LocationQueueRequest;
 use App\Http\Requests\Store\Location\LocationStoreRequest;
+use App\Models\Shopper\Shopper;
 use App\Models\Store\Location\Location;
+use App\Services\Shopper\ShopperService;
 use App\Services\Store\Location\LocationService;
+use Illuminate\Http\Request;
 
 /**
  * Class LocationController
@@ -21,12 +24,18 @@ class LocationController extends Controller
     protected $location;
 
     /**
+     * @var ShopperService
+     */
+    protected $shopper;
+
+    /**
      * LocationController constructor.
      * @param LocationService $location
      */
-    public function __construct(LocationService $location)
+    public function __construct(LocationService $location, ShopperService $shopper)
     {
         $this->location = $location;
+        $this->shopper = $shopper;
     }
 
     /**
@@ -80,10 +89,11 @@ class LocationController extends Controller
             ],
             [
                 'Shoppers',
-                'Shoppers.Status'
+                'Shoppers.Status',
+                'Store'
             ]
         );
-
+        
         $shoppers = null;
 
         if( isset($location['shoppers']) && count($location['shoppers']) >= 1 ){
@@ -93,5 +103,52 @@ class LocationController extends Controller
         return view('stores.location.queue')
             ->with('location', $location)
             ->with('shoppers', $shoppers);
+    }
+
+     /**
+     * @param Request $request
+     * @param string $storeUuid
+     * @param string $shopperUuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function checkout(Request $request, string $storeUuid = '', string $shopperUuid)
+    {
+        $shopper = $this->shopper->show(
+            [
+                'uuid' => $shopperUuid
+            ],
+            [
+                'Location'
+            ]
+        );
+
+        $this->shopper->update($shopper['id'], [
+            'status_id' => Shopper::COMPLETED,
+            'check_out' => now()
+        ]);
+
+        $this->shopper->updatePendingShoppersByLocation($shopper['location_id']);
+
+        return redirect()->route('store.location.queue', ['storeUuid' => $storeUuid, 'locationUuid' => $shopper['location']['uuid']])->with('success', 'Shopper has been checked out.');
+    }
+
+     /**
+     * @param Request $request
+     * @param string $storeUuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updateShopperLimit(Request $request, $storeUuid = null)
+    {   
+        $location = $this->location->show(
+            [
+                'uuid' => $request->location
+            ]
+        );
+        
+        $this->location->update($location['id'], [
+            'shopper_limit' => $request->shopper_limit
+        ]);
+
+        return redirect()->back()->with('success', 'Location limit has been updated.');
     }
 }

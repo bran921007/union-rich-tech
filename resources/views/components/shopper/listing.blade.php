@@ -18,6 +18,8 @@
     {{ $shopper['check_out'] }}
 </x-table-column>
 
-{{--<x-table-column>--}}
-
-{{--</x-table-column>--}}
+<x-table-column>
+    @if($shopper['status']['name'] == 'Active')
+       <x-shopper.checkout :shopper="$shopper" :store="$store" />
+    @endif
+</x-table-column>
