@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Store\Location;
 
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use App\Http\Controllers\Controller;
 
 /**
@@ -19,6 +22,7 @@ class QrCodeController extends Controller
      */
     public function qrCode(string $uuid)
     {
-        return QrCode::size(200)->generate( route('public.location', $uuid) );
+        return (new Writer(new ImageRenderer(new RendererStyle(200), new SvgImageBackEnd())))
+            ->writeString(route('public.location', $uuid));
     }
 }
