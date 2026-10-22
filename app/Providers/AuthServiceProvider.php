@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Models\{
     Store\Location\Location as LocationModel,
     Store\Store as StoreModel,
-    Team as TeamModel
+    User\Team as TeamModel
 };
 
 use App\Policies\{

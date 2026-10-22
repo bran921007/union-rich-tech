@@ -14,6 +14,7 @@ use App\Models\User\Team;
 use App\Models\User\TeamInvitation;
 use App\Models\User\User;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 use Laravel\Jetstream\Jetstream;
 
 class JetstreamServiceProvider extends ServiceProvider
@@ -39,6 +40,12 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::useTeamModel(Team::class);
         Jetstream::useTeamInvitationModel(TeamInvitation::class);
         Jetstream::useUserModel(User::class);
+
+        // Keep the application's published Jetstream components and public tag names.
+        foreach (glob(resource_path('views/vendor/jetstream/components/*.blade.php')) as $component) {
+            $name = basename($component, '.blade.php');
+            Blade::component('vendor.jetstream.components.'.$name, 'jet-'.$name);
+        }
 
         $this->configurePermissions();
 
